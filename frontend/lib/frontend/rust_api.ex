@@ -1,21 +1,154 @@
 defmodule Frontend.RustApi do
   require Logger
+  alias Frontend.LogEntry
   @rust_api_url "http://localhost:3000/api/v1/logs" # Adjust to match Rust API
 
   def fetch_logs do
     Logger.info("Fetching logs from Rust API...")
-    case HTTPoison.get(@rust_api_url, [], recv_timeout: 5000) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        Logger.info("Rust API Response: #{body}")
-        {:ok, Jason.decode!(body)}
+    # case HTTPoison.get(@rust_api_url, [], recv_timeout: 5000) do
+    #   {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+    #     Logger.info("Rust API Response: #{body}")
+    #     {:ok, Jason.decode!(body)}
 
-      {:ok, %HTTPoison.Response{status_code: code}} ->
-        Logger.error("Rust API returned status: #{code}")
-        {:error, "Rust API returned status: #{code}"}
+    #   {:ok, %HTTPoison.Response{status_code: code}} ->
+    #     Logger.error("Rust API returned status: #{code}")
+    #     {:error, "Rust API returned status: #{code}"}
 
-      {:error, reason} ->
-        Logger.error("Rust API request failed: #{inspect(reason)}")
-        {:error, reason}
-    end
+    #   {:error, reason} ->
+    #     Logger.error("Rust API request failed: #{inspect(reason)}")
+    #     {:error, reason}
+    # end
+    {:ok, [
+      %LogEntry{
+        time: "2m ago",
+        source_ip: "185.93.89.118",
+        country: "Russia",
+        asn: "ASN1234 (Evil ISP)",
+        event_type: "SSH Brute Force",
+        targeted_service: "SSH",
+        targeted_endpoint: "port 22",
+        request: "Invalid login attempt",
+        status: "Failed",
+        action_taken: "Banned (Fail2Ban)",
+        threat_level: "High"
+      },
+      %LogEntry{
+        time: "5m ago",
+        source_ip: "218.92.0.154",
+        country: "China",
+        asn: "ASN5678 (Suspicious ISP)",
+        event_type: "SQL Injection",
+        targeted_service: "Web (Nginx)",
+        targeted_endpoint: "/login.php",
+        request: "' OR 1=1--",
+        status: "Blocked",
+        action_taken: "Alerted",
+        threat_level: "High"
+      },
+      %LogEntry{
+        time: "7m ago",
+        source_ip: "103.44.98.33",
+        country: "India",
+        asn: "ASN9101 (Hosting Provider)",
+        event_type: "XSS Attempt",
+        targeted_service: "Web (Apache)",
+        targeted_endpoint: "/search?q=",
+        request: "<script>alert(1)</script>",
+        status: "Blocked",
+        action_taken: "Logged",
+        threat_level: "Medium"
+      },
+      %LogEntry{
+        time: "10m ago",
+        source_ip: "45.67.89.22",
+        country: "USA",
+        asn: "ASN3141 (Data Center)",
+        event_type: "Directory Traversal",
+        targeted_service: "Web (Nginx)",
+        targeted_endpoint: "/../../etc/passwd",
+        request: "`../../etc/passwd`",
+        status: "Blocked",
+        action_taken: "Alerted",
+        threat_level: "High"
+      },
+      %LogEntry{
+        time: "15m ago",
+        source_ip: "78.56.43.210",
+        country: "Germany",
+        asn: "ASN7654 (University Network)",
+        event_type: "SSH Brute Force",
+        targeted_service: "SSH",
+        targeted_endpoint: "port 22",
+        request: "Multiple failed login attempts",
+        status: "Failed",
+        action_taken: "Banned (Fail2Ban)",
+        threat_level: "High"
+      },
+      %LogEntry{
+        time: "20m ago",
+        source_ip: "202.134.56.78",
+        country: "Brazil",
+        asn: "ASN3210 (Unknown)",
+        event_type: "RFI Attempt",
+        targeted_service: "Web (Apache)",
+        targeted_endpoint: "/index.php",
+        request: "http://malicious.com/shell.txt",
+        status: "Blocked",
+        action_taken: "Logged",
+        threat_level: "Medium"
+      },
+      %LogEntry{
+        time: "25m ago",
+        source_ip: "67.89.12.34",
+        country: "Canada",
+        asn: "ASN1290 (ISP Provider)",
+        event_type: "Port Scanning",
+        targeted_service: "Multiple",
+        targeted_endpoint: "ports 21, 22, 80, 443",
+        request: "Scanning multiple ports",
+        status: "Allowed",
+        action_taken: "Logged",
+        threat_level: "Low"
+      },
+      %LogEntry{
+        time: "30m ago",
+        source_ip: "204.56.78.90",
+        country: "France",
+        asn: "ASN5432 (Hosting Provider)",
+        event_type: "Malicious File Upload",
+        targeted_service: "Web (Nginx)",
+        targeted_endpoint: "/upload.php",
+        request: "exe file uploaded",
+        status: "Blocked",
+        action_taken: "Alerted",
+        threat_level: "High"
+      },
+      %LogEntry{
+        time: "35m ago",
+        source_ip: "136.45.67.89",
+        country: "South Korea",
+        asn: "ASN6789 (Cloud Provider)",
+        event_type: "Phishing Attempt",
+        targeted_service: "Email",
+        targeted_endpoint: "User inbox",
+        request: "Fake PayPal login email",
+        status: "Blocked",
+        action_taken: "Logged",
+        threat_level: "Medium"
+      },
+      %LogEntry{
+        time: "40m ago",
+        source_ip: "193.150.200.12",
+        country: "Netherlands",
+        asn: "ASN1357 (VPN Provider)",
+        event_type: "Tor Anonymized Attack",
+        targeted_service: "Multiple",
+        targeted_endpoint: "port 443",
+        request: "Abuse detected from Tor exit node",
+        status: "Blocked",
+        action_taken: "Alerted",
+        threat_level: "High"
+      }
+    ]}
   end
 end
