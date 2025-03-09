@@ -3,3 +3,13 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+.expanded-row {
+    transition: max-height 0.5s ease-in-out !important;
+    max-height: 0;
+    overflow: hidden;
+  }
+  
+  .expanded-row.show {
+    max-height: 500px !important;
+  }
+  
