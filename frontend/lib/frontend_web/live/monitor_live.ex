@@ -3,14 +3,8 @@ defmodule FrontendWeb.MonitorLive do
   alias Frontend.RustApi
 
   def mount(_params, _session, socket) do
-    # Simulated logs for now, replace with actual Rust API call later
-    # logs = [
-    #   %{timestamp: "2025-03-09 12:30:00", level: "INFO", message: "System startup complete."},
-    #   %{timestamp: "2025-03-09 12:31:05", level: "WARNING", message: "Unusual activity detected on port 22."},
-    #   %{timestamp: "2025-03-09 12:31:30", level: "ERROR", message: "Failed SSH login attempt from 192.168.1.100."}
-    # ]
     logs = case RustApi.fetch_logs() do
-      {:ok, logs} -> logs
+      {:ok, logs} -> logs |> Enum.map(fn log -> Map.new(log, fn {k, v} -> {String.to_atom(k), v} end) end)
       {:error, _} -> []
     end
 
@@ -20,18 +14,10 @@ defmodule FrontendWeb.MonitorLive do
   # Handle row click
   def handle_event("toggle_log", %{"id" => id}, socket) do
     parsed_id = String.to_integer(id)
-    #selected_log = Enum.find(socket.assigns.logs, fn log -> :erlang.phash2(log) == parsed_id end)
-    IO.inspect(parsed_id, label: "Selected Log")
-
     expanded_log_id = if socket.assigns.expanded_log_id == parsed_id, do: nil, else: parsed_id
-    {:noreply, assign(socket, expanded_log_id: expanded_log_id)}
-    # {:noreply, assign(socket, selected_log: selected_log)}
-  end
 
-  # Close modal
-  # def handle_event("close_modal", _, socket) do
-  #   {:noreply, assign(socket, selected_log: nil)}
-  # end
+    {:noreply, assign(socket, expanded_log_id: expanded_log_id)}
+  end
 
   def render(assigns) do
     ~H"""
@@ -116,8 +102,4 @@ defmodule FrontendWeb.MonitorLive do
     </div>
     """
   end
-
-  defp log_class("INFO"), do: "text-blue-400"
-  defp log_class("WARNING"), do: "text-yellow-400"
-  defp log_class("ERROR"), do: "text-red-400"
 end
