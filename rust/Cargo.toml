@@ -14,3 +14,10 @@ tracing-appender = "0.2.3"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 chrono = { version = "0.4", features = ["serde"] }
 regex = "1"
+clickhouse = "0.12"
+dotenv = "0.15"
+tokio-stream = "0.1"
+
+[lib]
+name = "db"
+path = "db/mod.rs"
