@@ -59,3 +59,59 @@ impl ClickHouseDB {
         Ok(logs)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::net::IpAddr;
+
+    use super::*;
+    
+    use crate::mock::database::{MockDB, DbLogEntry, Database};
+    use tokio::sync::Mutex;
+    use IpAddr::V4;
+
+    #[tokio::test]
+    async fn test_insert_log() {
+        let db = MockDB::new();
+
+        let log = DbLogEntry {
+            uuid: "123".to_string(),
+            timestamp: "2021-01-01T00:00:00".to_string(),
+            source_ip: "192.168.1.1".to_string(),
+            event_type: "login".to_string(),
+            targeted_service: "auth".to_string(),
+            targeted_endpoint: "/login".to_string(),
+            request: "POST /login".to_string(),
+            status: "200".to_string(),
+            action_taken: "allow".to_string(),
+            threat_level: "low".to_string(),
+        };
+
+        let result = db.insert_log(log).await.unwrap();
+        assert_eq!(result, ());
+    }
+
+    #[tokio::test]
+    async fn test_fetch_logs() {
+        let db = MockDB::new();
+
+        let log = DbLogEntry {
+            uuid: "123".to_string(),
+            timestamp: "2021-01-01T00:00:00".to_string(),
+            source_ip: "192.168.1.1".to_string(),
+            event_type: "login".to_string(),
+            targeted_service: "auth".to_string(),
+            targeted_endpoint: "/login".to_string(),
+            request: "POST /login".to_string(),
+            status: "200".to_string(),
+            action_taken: "allow".to_string(),
+            threat_level: "low".to_string(),
+        };
+
+        let result = db.insert_log(log).await.unwrap();
+        assert_eq!(result, ());
+
+        let logs = db.fetch_logs(None).await.unwrap();
+        assert_eq!(logs.len(), 1);
+    }
+}
