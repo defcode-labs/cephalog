@@ -3,21 +3,7 @@ use tokio::sync::Mutex;
 use std::sync::Arc;
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
-
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct DbLogEntry{
-    pub uuid: String,
-    pub timestamp: String,
-    pub source_ip: String,
-    pub event_type: String,
-    pub targeted_service: String,
-    pub targeted_endpoint: String,
-    pub request: String,
-    pub status: String,
-    pub action_taken: String,
-    pub threat_level: String,
-}
+use crate::schema::DbLogEntry;
 
 #[async_trait::async_trait]
 pub trait Database: Send + Sync {
