@@ -14,9 +14,22 @@ tracing-appender = "0.2.3"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 chrono = { version = "0.4", features = ["serde"] }
 regex = "1"
-clickhouse = "0.12"
+clickhouse = {version = "0.13.2", features=["inserter"]}
 dotenv = "0.15"
 tokio-stream = "0.1"
+async-trait = "0.1"
+reqwest = { version = "0.11", features = ["json"] }
+
+[dependencies.uuid]
+version = "1.15.1"
+# Lets you generate random UUIDs
+features = [
+    "v4",
+    "serde",
+]
+
+[dev-dependencies]
+clickhouse = { version = "0.13.2", features = ["test-util"] }
 
 [lib]
 name = "db"
