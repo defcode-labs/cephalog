@@ -4,9 +4,14 @@ CLICKHOUSE_PORT=8123
 CLICKHOUSE_DB=test_db
 CLICKHOUSE_USER=default
 CLICKHOUSE_PASSWORD=""
+CLICKHOUSE_HOST=localhost
 CLICKHOUSE_IMAGE=clickhouse/clickhouse-server:latest
-CLICKHOUSE_URL?=http://localhost:$(CLICKHOUSE_PORT)
+# CLICKHOUSE_URL?=http://$(CLICKHOUSE_USER)@$(CLICKHOUSE_HOST):$(CLICKHOUSE_PORT)
+CLICKHOUSE_URL=http://localhost:8123
 
+export CLICKHOUSE_URL=http://localhost:8123
+export CLICKHOUSE_DB=test_db
+export CLICKHOUSE_USER=default
 # Start ClickHouse container for testing
 .PHONY: up
 up:
@@ -14,8 +19,7 @@ up:
 		--name $(CLICKHOUSE_CONTAINER) \
 		-p $(CLICKHOUSE_PORT):8123 \
 		-e CLICKHOUSE_DB=$(CLICKHOUSE_DB) \
-		-e CLICKHOUSE_USER=$(CLICKHOUSE_USER) \
-		-e CLICKHOUSE_PASSWORD=$(CLICKHOUSE_PASSWORD) \
+		-e CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1 \
 		$(CLICKHOUSE_IMAGE)
 
 # Wait for ClickHouse to be ready
@@ -54,12 +58,13 @@ migrate: wait
 # Run integration tests
 .PHONY: test
 test: migrate
-	cargo test --test '*'
+	CARGO_ENV="CLICKHOUSE_URL=$(CLICKHOUSE_URL) CLICKHOUSE_DB=$(CLICKHOUSE_DB) CLICKHOUSE_USER=$(CLICKHOUSE_USER)" cargo test --test '*' -- --nocapture
 
 # Stop and remove the container
 .PHONY: down
 down:
 	docker stop $(CLICKHOUSE_CONTAINER)
+	
 
 # Restart ClickHouse
 .PHONY: restart

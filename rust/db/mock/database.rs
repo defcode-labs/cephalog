@@ -44,7 +44,7 @@ impl MockDB {
 impl Database for MockDB {
     async fn insert_log(&self, log: DbLogEntry) -> Result<(), String> {
         let mut logs = self.logs.lock().await;
-        logs.insert(log.uuid.clone(), log);
+        logs.insert(log.id.clone(), log);
         Ok(())
     }
 

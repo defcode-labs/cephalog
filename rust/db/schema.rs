@@ -1,10 +1,11 @@
 use clickhouse::{Client, Row};
+use uuid::Uuid;
 use serde::{Deserialize, Serialize};
 
 
 #[derive(Debug, Serialize, Deserialize, Clone, Row)]
-pub struct DbLogEntry{
-    pub uuid: String,
+pub struct DbLogEntry {
+    pub id: String,
     pub timestamp: String,
     pub source_ip: String,
     pub event_type: String,
@@ -20,7 +21,7 @@ pub struct DbLogEntry{
 pub async fn setup_schema(client: &Client) -> Result<(), Box<dyn std::error::Error>> {
     let query = r#"
         CREATE TABLE IF NOT EXISTS logs (
-            uuid UUID DEFAULT generateUUIDv4(),
+            id UUID DEFAULT generateUUIDv4(),
             timestamp DateTime default now(),
             source_ip String,
             event_type LowCardinality(String),

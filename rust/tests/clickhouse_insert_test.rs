@@ -9,4 +9,8 @@ async fn test_insert_log() {
     let logs = get_test_logs().await.unwrap();
     let result = db.insert_logs(logs).await.unwrap();
     assert_eq!(result, ());
+
+    let logs = db.fetch_logs(None).await.unwrap();
+    assert_eq!(logs.len(), 10);
+
 }
